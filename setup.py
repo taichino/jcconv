@@ -7,7 +7,7 @@ import jcconv
 from jcconv import __version__, __license__, __author__
 
 if __name__ == '__main__':
-  from jcconv import jcconv_test  
+  from jcconv import jcconv_test
   # run module test
   loader = unittest.TestLoader()
   result = unittest.TestResult()
