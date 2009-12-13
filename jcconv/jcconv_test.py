@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from __init__ import *
+from jcconv import *
 
 class JcconvTest(unittest.TestCase):
   def testKana(self):
@@ -30,6 +30,13 @@ class JcconvTest(unittest.TestCase):
 
     # half => wide
     self.assertEqual(half2wide('cherry spitz 1996'), 'ｃｈｅｒｒｙ ｓｐｉｔｚ １９９６')
+
+    # half symbole => wide symbol
+    self.assertEqual(half2wide('!%^?'), '！％＾？')
+
+    # wide symbole => half symbol
+    self.assertEqual(half2wide('^^);'), '＾＾）；')
+
 
 if __name__ == '__main__':
   unittest.main()
