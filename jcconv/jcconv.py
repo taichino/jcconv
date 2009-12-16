@@ -6,45 +6,45 @@ __all__ = ['hira2kata', 'kata2hira', 'half2hira', 'hira2half', 'kata2half',
 import re
 
 # convert hiragana to katakana
-def hira2kata(text):
-  return convert(text, jcconv.HIRA, jcconv.KATA)
+def hira2kata(text, reserved=[]):
+  return convert(text, jcconv.HIRA, jcconv.KATA, reserved)
 
 # convert katakana to hiragana
-def kata2hira(text):
-  return convert(text, jcconv.KATA, jcconv.HIRA)
+def kata2hira(text, reserved=[]):
+  return convert(text, jcconv.KATA, jcconv.HIRA, reserved)
 
 # convert half-width kana to hiragana
-def half2hira(text):
-  return convert(text, jcconv.HALF, jcconv.HIRA)
+def half2hira(text, reserved=[]):
+  return convert(text, jcconv.HALF, jcconv.HIRA, reserved)
 
 # convert hiragana to half-width kana
-def hira2half(text):
-  return convert(text, jcconv.HIRA, jcconv.HALF)
+def hira2half(text, reserved=[]):
+  return convert(text, jcconv.HIRA, jcconv.HALF, reserved)
 
 # convert katakana to half-with kana
-def kata2half(text):
-  return convert(text, jcconv.KATA, jcconv.HALF)
+def kata2half(text, reserved=[]):
+  return convert(text, jcconv.KATA, jcconv.HALF, reserved)
 
 # convert half-width kana to katakana
-def half2kata(text):
-  return convert(text, jcconv.HALF, jcconv.KATA)
+def half2kata(text, reserved=[]):
+  return convert(text, jcconv.HALF, jcconv.KATA, reserved)
 
 # expand half width number and alphabet to wide width
-def half2wide(text):
-  text = convert(text, jcconv.HNUM, jcconv.WNUM)
-  text = convert(text, jcconv.HALP, jcconv.WALP)
-  return convert(text, jcconv.HSYM, jcconv.WSYM)
+def half2wide(text, reserved=[]):
+  text = convert(text, jcconv.HNUM, jcconv.WNUM, reserved)
+  text = convert(text, jcconv.HALP, jcconv.WALP, reserved)
+  return convert(text, jcconv.HSYM, jcconv.WSYM, reserved)
 
 # shrink wide with number and alphabet to half width
-def wide2half(text):
-  text = convert(text, jcconv.WNUM, jcconv.HNUM)
-  text = convert(text, jcconv.WALP, jcconv.HALP)
-  return convert(text, jcconv.WSYM, jcconv.HSYM)
+def wide2half(text, reserved=[]):
+  text = convert(text, jcconv.WNUM, jcconv.HNUM, reserved)
+  text = convert(text, jcconv.WALP, jcconv.HALP, reserved)
+  return convert(text, jcconv.WSYM, jcconv.HSYM, reserved)
 
 # convert 'frm' charset to 'to' charset
 # input text must be unicode or str(utf-8)
 # 'frm' and 'to' can be specified with (HIRA, KATA, HALF, WNUM, HNUM, WALP, HALP, WSYM, HSYM)
-def convert(text, frm, to):
+def convert(text, frm, to, reserved=[]):
   uflag = isinstance(text, unicode)
   f_set = jcconv.char_sets[frm]
   t_set = jcconv.char_sets[to]
@@ -53,6 +53,11 @@ def convert(text, frm, to):
   if len(f_set[0].split(' ')) == len(t_set[0].split(' ')):
     for i in range(len(f_set)):
       conv_table = dict(zip(f_set[i].split(' '), t_set[i].split(' ')))
+      for r in reserved:
+        try:
+          del(conv_table[r])
+        except:
+          pass
       text = _multiple_replace(text, conv_table)
     return uflag and text or text.encode('utf-8')
   else:
@@ -84,7 +89,7 @@ class jcconv:
           u'Ａ Ｂ Ｃ Ｄ Ｅ Ｆ Ｇ Ｈ Ｉ Ｊ Ｋ Ｌ Ｍ Ｎ Ｏ Ｐ Ｑ Ｒ Ｓ Ｔ Ｕ Ｖ Ｗ Ｘ Ｙ Ｚ']
   halp = [u'a b c d e f g h i j k l m n o p q r s t u v w x y z ' + \
           u'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z']
-  wsym = [u'！ ” ＃ ＄ ％ ＆ ’ （ ） ＊ ＋ 、 ー ． ／ ： ； ＜ ＝ ＞ ？ ＠ 「 ＼ 」 ＾ ＿ ｀ 『 ｜ 』 〜']
+  wsym = [u'！ ” ＃ ＄ ％ ＆ ’ （ ） ＊ ＋ 、 − ． ／ ： ； ＜ ＝ ＞ ？ ＠ 「 ＼ 」 ＾ ＿ ｀ 『 ｜ 』 〜']
   hsym = [u'! \" # $ % & \' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~']
   char_sets = [hira, kata, half, wnum, hnum, walp, halp, wsym, hsym]
 
@@ -93,7 +98,7 @@ if __name__ == '__main__':
   import codecs, sys
   sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
   
-  print convert(u'あいうえお', jcconv.HIRA, jcconv.HALF)
+  print convert(u'あいうえお', jcconv.HIRA, jcconv.HALF, [u'う'])
   print convert(u'ばいおりん', jcconv.HIRA, jcconv.HALF)
   print convert(u'ﾊﾞｲｵﾘﾝ', jcconv.HALF, jcconv.HIRA)
   print convert(u'12345', jcconv.HNUM, jcconv.WNUM)

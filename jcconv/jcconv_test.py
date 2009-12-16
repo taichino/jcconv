@@ -37,6 +37,10 @@ class JcconvTest(unittest.TestCase):
     # wide symbole => half symbol
     self.assertEqual(half2wide('^^);'), '＾＾）；')
 
+  def testReserve(self):
+    res = half2wide('abcde', [u'a', u'e'])
+    self.assertEqual(res, 'aｂｃｄe')
+
 
 if __name__ == '__main__':
   unittest.main()
