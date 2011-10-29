@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __all__ = ['hira2kata', 'kata2hira', 'half2hira', 'hira2half', 'kata2half',
-           'half2kata', 'half2wide', 'wide2half', 'convert']
+           'half2kata', 'half2wide', 'wide2half', 'convert', 'check_kata']
 
 import re
 
@@ -68,6 +68,23 @@ def _multiple_replace(text, dic):
   def proc_one(match):
     return dic[match.group(0)]
   return rx.sub(proc_one, text)
+
+
+def check(text, char_set_type):
+  uflag = isinstance(text, unicode)
+  text = uflag and text or text.decode('utf-8')
+  char_set = []
+  for set in jcconv.char_sets[char_set_type]:
+    char_set.extend(set.split(' '))
+  for text_char in text:
+    if not text_char in char_set:
+      return False
+  return True
+
+
+def check_kata(text):
+  return check(text, jcconv.KATA)
+
 
 # define character sets used in japanese
 class jcconv:
