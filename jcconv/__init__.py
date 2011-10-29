@@ -5,7 +5,7 @@
    This module also treat 'half/wide number', 'half/wide alphabet'.
 
    Since 0.2.0, check_hira, check_kata, check_half functions were added.
-   you can check if string consists some kind of characters.
+   you can check if string consists of characters you specified.
    
    IMPOTANT: In current version, this works only with utf-8 encoding.
 
@@ -26,7 +26,7 @@
 """
 
 __author__  = "Matsumoto Taichi (taichino@gmail.com)"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __license__ = "MIT License"
 
 from jcconv import *
