@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 __all__ = ['hira2kata', 'kata2hira', 'half2hira', 'hira2half', 'kata2half',
-           'half2kata', 'half2wide', 'wide2half', 'convert', 'check_kata']
+           'half2kata', 'half2wide', 'wide2half', 'convert',
+           'check_hira', 'check_kata', 'check_half']
 
 import re
 
@@ -41,10 +42,28 @@ def wide2half(text, reserved=[]):
   text = convert(text, jcconv.WALP, jcconv.HALP, reserved)
   return convert(text, jcconv.WSYM, jcconv.HSYM, reserved)
 
+# check if 'text' consists of hiragana
+def check_hira(text):
+  return check(text, jcconv.HIRA)
+
+# check if 'text' consists of katakana
+def check_kata(text):
+  return check(text, jcconv.KATA)
+
+# check if 'text' consists of half-width kana
+def check_half(text):
+  return check(text, jcconv.HALF)
+
 # convert 'frm' charset to 'to' charset
 # input text must be unicode or str(utf-8)
 # 'frm' and 'to' can be specified with (HIRA, KATA, HALF, WNUM, HNUM, WALP, HALP, WSYM, HSYM)
 def convert(text, frm, to, reserved=[]):
+  def _multiple_replace(text, dic):
+    rx = re.compile('|'.join(map(re.escape, dic)))
+    def proc_one(match):
+      return dic[match.group(0)]
+    return rx.sub(proc_one, text)
+
   uflag = isinstance(text, unicode)
   f_set = jcconv.char_sets[frm]
   t_set = jcconv.char_sets[to]
@@ -63,13 +82,6 @@ def convert(text, frm, to, reserved=[]):
   else:
     raise "Invalid Parameter"
 
-def _multiple_replace(text, dic):
-  rx = re.compile('|'.join(map(re.escape, dic)))
-  def proc_one(match):
-    return dic[match.group(0)]
-  return rx.sub(proc_one, text)
-
-
 def check(text, char_set_type):
   uflag = isinstance(text, unicode)
   text = uflag and text or text.decode('utf-8')
@@ -80,11 +92,6 @@ def check(text, char_set_type):
     if not text_char in char_set:
       return False
   return True
-
-
-def check_kata(text):
-  return check(text, jcconv.KATA)
-
 
 # define character sets used in japanese
 class jcconv:
@@ -119,3 +126,8 @@ if __name__ == '__main__':
   print convert(u'ばいおりん', jcconv.HIRA, jcconv.HALF)
   print convert(u'ﾊﾞｲｵﾘﾝ', jcconv.HALF, jcconv.HIRA)
   print convert(u'12345', jcconv.HNUM, jcconv.WNUM)
+
+  print check_hira(u'ひらがな')
+  print check_hira(u'カタカナ')
+  print check_kata(u'ひらがな')
+  print check_kata(u'カタカナ')
