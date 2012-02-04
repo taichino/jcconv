@@ -88,10 +88,7 @@ def check(text, char_set_type):
   char_set = []
   for set in jcconv.char_sets[char_set_type]:
     char_set.extend(set.split(' '))
-  for text_char in text:
-    if not text_char in char_set:
-      return False
-  return True
+  return all([text_char in char_set for text_char in text])
 
 # define character sets used in japanese
 class jcconv:
