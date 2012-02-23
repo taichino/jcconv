@@ -22,7 +22,7 @@ def half2hira(text, reserved=[]):
 def hira2half(text, reserved=[]):
   return convert(text, jcconv.HIRA, jcconv.HALF, reserved)
 
-# convert katakana to half-with kana
+# convert katakana to half-width kana
 def kata2half(text, reserved=[]):
   return convert(text, jcconv.KATA, jcconv.HALF, reserved)
 
@@ -36,7 +36,7 @@ def half2wide(text, reserved=[]):
   text = convert(text, jcconv.HALP, jcconv.WALP, reserved)
   return convert(text, jcconv.HSYM, jcconv.WSYM, reserved)
 
-# shrink wide with number and alphabet to half width
+# shrink wide width number and alphabet to half width
 def wide2half(text, reserved=[]):
   text = convert(text, jcconv.WNUM, jcconv.HNUM, reserved)
   text = convert(text, jcconv.WALP, jcconv.HALP, reserved)
